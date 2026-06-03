@@ -1,20 +1,22 @@
-FROM python:3.14-slim as builder
+FROM python:3.14-slim AS builder
 
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /bin/uv
 
 WORKDIR /app
 
-# Копируем файлы с зависимостями
+# Запрещаем uv скачивать собственный Python
+ENV UV_PYTHON_DOWNLOADS=0
+
+# Копируем файлы зависимостей
 COPY app/pyproject.toml app/uv.lock ./
 
-# Устанавливаем зависимости
+# Устанавливаем production зависимости
 RUN uv sync --frozen --no-dev
 
-# Копируем содержимое папки app (твой код) в /app
+# Копируем исходный код
 COPY app/ .
 
-
-FROM python:3.14-slim as runner
+FROM python:3.14-slim AS runner
 
 WORKDIR /app
 
