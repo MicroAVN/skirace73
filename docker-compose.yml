@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  api:
+    build: ./backend
+    container_name: skirace_api
+    restart: unless-stopped
+    ports:
+      - "8000:80"
+    networks:
+      - skirace_network
+    
+    
+
+
+
+
+networks:
+  skirace_network:
+    driver: bridge
